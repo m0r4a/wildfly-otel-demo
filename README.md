@@ -134,15 +134,7 @@ The agent is configured via `JAVA_OPTS` in `compose.yaml`:
 -Dotel.logs.exporter=none
 ```
 
-To switch between WildFly versions, edit the image and the `JAVA_OPTS` in `compose.yaml`:
-
-```yaml
-# WildFly 9 (legacy)
-image: jboss/wildfly:9.0.2.Final
-
-# WildFly 18
-image: jboss/wildfly:18.0.1.Final
-```
+> **Note**: To switch between WildFly versions, edit the image and the `JAVA_OPTS` in `compose.yaml`:
 
 > **Note**: WildFly 9 runs on Java 8 and requires `XX:MaxPermSize` (PermGen).
 > WildFly 18+ targets Java 11+ with Metaspace; remove that flag from `JAVA_OPTS` when switching images.
