@@ -60,9 +60,7 @@ WildFly (javaagent) ──OTLP/gRPC──► OTel Collector ──► Jaeger    
 
 ## Quick Start
 
-### 1. `cd` into the version you want to try out
-
-### 2. Get the WARs
+### 1. Get the WARs
 
 **Option A: Download pre-built WARs (no build tooling required)**
 
@@ -86,20 +84,20 @@ make build LOCAL=1
 
 See [BUILD.md](./BUILD.md) for detailed instructions and troubleshooting.
 
-### 3. Start the stack
+### 2. Start the stack
 
 ```bash
 docker compose up -d
 ```
 
-### 4. Verify the deployment
+### 3. Verify the deployment
 
 ```bash
 # Wait for "Deployed backend.war" and "Deployed frontend.war" in the logs
 docker logs -f wildfly-demo
 ```
 
-### 5. Access the services
+### 4. Access the services
 
 | Service | URL |
 |---------|-----|
