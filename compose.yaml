@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:13-alpine
+    container_name: postgres-db
+    environment:
+      - POSTGRES_USER=demo_user
+      - POSTGRES_PASSWORD=demo_pass
+      - POSTGRES_DB=demo_db
+    volumes:
+      - ./configs/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  wildfly:
+    image: jboss/wildfly:9.0.2.Final
+   #image: jboss/wildfly:18.0.1.Final
+    container_name: wildfly-demo
+    environment:
+      # WildFly 9.0.2 — includes MaxPermSize (Java 8 PermGen)
+      - JAVA_OPTS=-Xms128m -Xmx512m -XX:MaxPermSize=256m -javaagent:/opt/jboss/wildfly/opentelemetry-javaagent.jar -Dotel.service.name=wildfly-cluster -Dotel.exporter.otlp.endpoint=http://otel-collector:4317 -Dotel.exporter.otlp.protocol=grpc -Dotel.metrics.exporter=otlp -Dotel.traces.exporter=otlp -Dotel.logs.exporter=none
+      # WildFly 18.0.1 — drop MaxPermSize (Java 11+ Metaspace)
+     #- JAVA_OPTS=-Xms128m -Xmx512m -javaagent:/opt/jboss/wildfly/opentelemetry-javaagent.jar -Dotel.service.name=wildfly-cluster -Dotel.exporter.otlp.endpoint=http://otel-collector:4317 -Dotel.exporter.otlp.protocol=grpc -Dotel.metrics.exporter=otlp -Dotel.traces.exporter=otlp -Dotel.logs.exporter=none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/opt/jboss/wildfly/opentelemetry-javaagent.jar
+      - ./wars/frontend.war:/opt/jboss/wildfly/standalone/deployments/frontend.war
+      - ./wars/backend.war:/opt/jboss/wildfly/standalone/deployments/backend.war
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    depends_on:
+      - otel-collector
+      - postgres
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./configs/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"
+      - "8889:8889"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - otel-collector
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./configs/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+      - jaeger
