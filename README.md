@@ -137,7 +137,7 @@ The agent is configured via `JAVA_OPTS` in `compose.yaml`:
 > **Note**: To switch between WildFly versions, edit the image and the `JAVA_OPTS` in `compose.yaml`:
 
 > **Note**: WildFly 9 runs on Java 8 and requires `XX:MaxPermSize` (PermGen).
-> WildFly 18+ targets Java 11+ with Metaspace; remove that flag from `JAVA_OPTS` when switching images.
+> WildFly 18+ targets Java 11+ with Metaspace, that's why the flag is removed from `JAVA_OPTS` when switching images.
 
 ## Database
 
