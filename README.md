@@ -66,11 +66,11 @@ WildFly (javaagent) ──OTLP/gRPC──► OTel Collector ──► Jaeger    
 
 ```bash
 mkdir -p wars
-curl -Lo wars/backend.war  https://github.com/m0r4a/wildfly-otel-demo/releases/download/v0.0.1/backend.war
-curl -Lo wars/frontend.war https://github.com/m0r4a/wildfly-otel-demo/releases/download/v0.0.1/frontend.war
+curl -Lo wars/backend.war  https://github.com/m0r4a/wildfly-otel-demo/releases/download/v0.0.2/backend.war
+curl -Lo wars/frontend.war https://github.com/m0r4a/wildfly-otel-demo/releases/download/v0.0.2/frontend.war
 ```
 
-Or download them manually from the [releases page](https://github.com/m0r4a/wildfly-otel-demo/releases/tag/v0.0.1) and place them in the `wars/` directory.
+Or download them manually from the [releases page](https://github.com/m0r4a/wildfly-otel-demo/releases/tag/v0.0.2) and place them in the `wars/` directory.
 
 **Option B: Build from source**
 
